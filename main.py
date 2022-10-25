@@ -5,12 +5,15 @@ from pruner import Pruner
 
 
 if __name__ == '__main__':
-    loader = DataLoader()
-    data = loader.load_data()
+    loader = DataLoader("./wifi_db/clean_dataset.txt")
+    train_x, train_y, test_x, test_y = loader.load_data()
+
     creator = DecisionTreeCreator()
     depth = None
-    tree = creator.decision_tree_learning(data, depth)
+    tree = creator.decision_tree_learning(train_x, train_y, depth)
+
     evaluator = Evaluator()
     evaluator.evaluate(tree)
+
     pruner = Pruner()
     pruned_tree = pruner.prune(tree)
