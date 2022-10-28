@@ -14,11 +14,17 @@ class Tree:
 
 
 class Node:
-    def __init__(self, attribute, value, left, right):
+    def __init__(self, split_value=None, attribute=None, left=None, right=None, label=None):
+        """left < split_value <= right"""
+        self.split_value = split_value
         self.attribute = attribute
-        self.value = value
         self.left = left
         self.right = right
+        self.label = label
+
+    @property
+    def is_leaf_node(self):
+        return not self.left and not self.right
 
 
 if __name__ == '__main__':
