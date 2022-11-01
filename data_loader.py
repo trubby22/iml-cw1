@@ -7,6 +7,9 @@ class DataLoader:
         pass
 
     def load_datasets(self):
+        return np.loadtxt(clean_dataset), np.loadtxt(noisy_dataset)
+
+    def load_datasets_old(self):
         return self.load_data(clean_dataset), self.load_data(noisy_dataset)
 
     @staticmethod
@@ -24,4 +27,4 @@ if __name__ == '__main__':
     clean_data, noisy_data = dl.load_datasets()
     print(clean_data)
     print(noisy_data)
-    print(clean_data == noisy_data)
+    print(clean_data == 1)
