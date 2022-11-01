@@ -58,7 +58,7 @@ class DecisionTreeCreator:
         entropy = 0
         for label in set(dataset[:, self.label_ix]):
             p = self.probability(dataset[:, self.label_ix], label)
-            entropy += p * math.log(p, 2)
+            entropy += p * np.log2(p)
         return -entropy
 
     def probability(self, dataset: np.array, label: int) -> float:
@@ -70,6 +70,8 @@ if __name__ == '__main__':
     dtc = DecisionTreeCreator()
     node, depth = dtc.decision_tree_learning(clean_data, 0)
     tree = Tree(node, depth)
-    print(node)
     print(depth)
-    print(tree.to_dict())
+    labels = clean_data[:,-1]
+    prediction = tree.predict(clean_data[:, :-1])
+    print(len(labels[labels == prediction]) / len(labels))
+    pass

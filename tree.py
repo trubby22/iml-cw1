@@ -1,4 +1,5 @@
 from __future__ import annotations
+import numpy as np
 from dataclasses import *
 
 
@@ -12,6 +13,9 @@ class Tree:
 
     def to_dict(self) -> dict:
         return self.root.to_dict()
+
+    def predict(self, text_x: np.ndarray) -> np.array:
+        return np.array([self.root.predict(x) for x in text_x])
         
 
 
@@ -38,6 +42,12 @@ class Node:
             'right': self.right.to_dict(),
         }
 
+    def predict(self, x: np.ndarray) -> int:
+        if self.is_leaf_node:
+            return self.label
+        if x[self.attribute] < self.split_value:
+            return self.left.predict(x)
+        return self.right.predict(x)
 
 if __name__ == '__main__':
     pass
