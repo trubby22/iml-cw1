@@ -10,8 +10,9 @@ class Tree:
     def visualise(self):
         pass
 
-    def to_dict(self):
-        return {}
+    def to_dict(self) -> dict:
+        return self.root.to_dict()
+        
 
 
 class Node:
@@ -26,6 +27,16 @@ class Node:
     @property
     def is_leaf_node(self):
         return not self.left and not self.right
+
+    def to_dict(self) -> dict:
+        if self.is_leaf_node:
+            return {'label': self.label}
+        return {
+            'split_value': self.split_value,
+            'attribute': self.attribute,
+            'left': self.left.to_dict(),
+            'right': self.right.to_dict(),
+        }
 
 
 if __name__ == '__main__':

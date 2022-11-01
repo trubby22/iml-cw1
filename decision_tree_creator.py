@@ -72,3 +72,4 @@ if __name__ == '__main__':
     tree = Tree(node, depth)
     print(node)
     print(depth)
+    print(tree.to_dict())
