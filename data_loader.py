@@ -2,34 +2,59 @@ import numpy as np
 from constants import *
 
 
+_num_of_splits = 10
+_training_split = 0.6
+_validation_split = 0.2
+_test_split = 0.2
+
+
 class DataLoader:
-    def __init__(self):
-        pass
+    def __init__(self, path):
+        self.path = path
+        self.dataset = None
+        self.cross_validation_arr = None
 
-    def load_datasets(self):
-        return np.loadtxt(clean_dataset), np.loadtxt(noisy_dataset)
+    def get_cross_validation_arr(self) -> list[tuple]:
+        self.load_dataset()
+        self.shuffle()
+        self.cross_validate()
+        return self.cross_validation_arr
 
-    def load_datasets_old(self):
-        return self.load_data(clean_dataset), self.load_data(noisy_dataset)
+    def load_dataset(self):
+        self.dataset = np.loadtxt(self.path)
+        return self.dataset
 
-    @staticmethod
-    def load_data(path):
-        dtype = list(zip([f'A{x}' for x in range(7)], [np.float32] * 7))
-        dtype.append(('L', np.int32))
-        return np.loadtxt(path, dtype=dtype)
+    def shuffle(self):
+        np.random.shuffle(self.dataset)
 
-    def shuffle(self, dataset: np.ndarray) -> np.ndarray:
-        pass
+    def cross_validate(self):
+        res = []
+        self.dataset: np.ndarray
+        sections = np.split(self.dataset, _num_of_splits)
+        for i in range(_num_of_splits):
+            training_ixs_raw = list(range(i, i + int(_training_split * _num_of_splits)))
+            training_ixs = [j % _num_of_splits for j in training_ixs_raw]
+            training_arr = [sections[j] for j in training_ixs]
+            training_dataset = np.concatenate(training_arr)
 
-    def generate_training_and_test_datasets(self):
-        pass
+            validation_ixs_raw = list(range(i, i + int(_validation_split * _num_of_splits)))
+            validation_ixs = [j % _num_of_splits for j in validation_ixs_raw]
+            validation_arr = [sections[j] for j in validation_ixs]
+            validation_dataset = np.concatenate(validation_arr)
+
+            test_ixs_raw = list(range(i, i + int(_test_split * _num_of_splits)))
+            test_ixs = [j % _num_of_splits for j in test_ixs_raw]
+            test_arr = [sections[j] for j in test_ixs]
+            test_dataset = np.concatenate(test_arr)
+
+            res.append((training_dataset, validation_dataset, test_dataset))
+        self.cross_validation_arr = res
 
 
 if __name__ == '__main__':
     # data = np.loadtxt(clean_dataset)
     # print(data)
-    dl = DataLoader()
-    clean_data, noisy_data = dl.load_datasets()
+    dl = DataLoader(clean_dataset)
+    clean_data = dl.load_dataset()
     print(clean_data)
-    print(noisy_data)
     print(clean_data == 1)

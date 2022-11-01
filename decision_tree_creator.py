@@ -5,6 +5,7 @@ from tree import *
 from data_loader import *
 import math
 from datetime import datetime
+from utils import *
 
 
 class DecisionTreeCreator:
@@ -72,11 +73,11 @@ class DecisionTreeCreator:
 
 if __name__ == '__main__':
     dl = DataLoader()
-    clean_data, noisy_data = dl.load_datasets()
+    clean_data, noisy_data = dl.load_dataset()
     dtc = DecisionTreeCreator()
-    print(datetime.now().strftime('%H:%M:%S'))
+    timestamp()
     node, depth = dtc.decision_tree_learning(clean_data, 0)
-    print(datetime.now().strftime('%H:%M:%S'))
+    timestamp()
     tree = Tree(node, depth)
     print(depth)
     labels = clean_data[:, -1]

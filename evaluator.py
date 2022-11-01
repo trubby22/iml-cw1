@@ -1,6 +1,9 @@
 from tree import Tree
 import numpy as np
 from data_loader import DataLoader
+from constants import *
+from decision_tree_creator import *
+from utils import *
 
 
 class Evaluator:
@@ -31,7 +34,7 @@ f1_measure: {self.f1}
         self.f1_measure()
         print(self)
 
-    def confusion_matrix(self) -> np.ndarray:
+    def confusion_matrix(self):
         predicted_labels = self.tree.predict(self.test_data)
         actual_labels = np.array(self.test_data[:, -1])
         assert len(predicted_labels) == len(actual_labels)
@@ -41,9 +44,8 @@ f1_measure: {self.f1}
             al = int(actual_labels[i])
             res[al - 1, pl - 1] += 1
         self.c_matrix = res
-        return res
 
-    def accuracy(self) -> float:
+    def accuracy(self):
         correct = 0
         total = 0
         for i in range(4):
@@ -53,9 +55,8 @@ f1_measure: {self.f1}
                 total += self.c_matrix[i][j]
         res = correct / total
         self.acc = res
-        return res
 
-    def precision(self) -> np.ndarray:
+    def precision(self):
         res = np.ndarray(shape=(4,))
         for i in range(4):
             correct = 0
@@ -66,9 +67,8 @@ f1_measure: {self.f1}
                 total += self.c_matrix[j][i]
             res[i] = correct / total
         self.prec = res
-        return res
 
-    def recall(self) -> np.ndarray:
+    def recall(self):
         res = np.ndarray(shape=(4,))
         for i in range(4):
             correct = 0
@@ -79,7 +79,6 @@ f1_measure: {self.f1}
                 total += self.c_matrix[i][j]
             res[i] = correct / total
         self.rec = res
-        return res
 
     def f1_measure(self):
         res = np.ndarray(shape=(4,))
@@ -89,12 +88,15 @@ f1_measure: {self.f1}
             r = self.rec[i]
             res[i] = 2 * p * r / (p + r)
         self.f1 = res
-        return res
 
 
 if __name__ == '__main__':
-    dl = DataLoader()
-    clean_data, noisy_data = dl.load_datasets()
-    x: Tree = Tree.from_file()
-    e = Evaluator(test_data=clean_data, tree=x)
-    e.evaluate()
+    timestamp()
+    dl = DataLoader(clean_dataset)
+    arr = dl.get_cross_validation_arr()
+    timestamp()
+    for training_set, validation_set, test_set in arr:
+        t = DecisionTreeCreator().learn(training_set)
+        e = Evaluator(test_data=test_set, tree=t)
+        e.evaluate()
+        timestamp()
