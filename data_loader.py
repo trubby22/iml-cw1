@@ -1,20 +1,30 @@
 import numpy as np
+from constants import *
+
 
 class DataLoader:
-    def __init__(self, file_name):
-        self.file_name = file_name
+    def __init__(self):
+        pass
 
-    def load_data(self):
-        data = np.loadtxt(self.file_name, dtype=np.float32)
-        self.train, self.test = np.split(data, [int(0.67 * len(data))])
-        self.train_x, self.train_y = np.split(self.train, [len(self.train[0]) - 1], axis=1)
-        self.test_x, self.test_y = np.split(self.test, [len(self.test[0]) - 1], axis=1)
-        return self.train_x, self.train_y.astype(int), self.test_x, self.test_y.astype(int)
+    def load_datasets(self):
+        # return self.load_data(clean_dataset), self.load_data(noisy_dataset)
+        return np.loadtxt(clean_dataset), np.loadtxt(noisy_dataset)
+
+    @staticmethod
+    def load_data(path):
+        dtype = list(zip([f'A{x}' for x in range(7)], [np.float32] * 7))
+        dtype.append(('L', np.int32))
+        return np.loadtxt(path, dtype=dtype)
+
+    def generate_training_and_test_datasets(self):
+        pass
 
 
 if __name__ == '__main__':
-    loader = DataLoader("./wifi_db/clean_dataset.txt")
-    train_x, train_y = loader.get_train_data()
-    test_x, test_y = loader.get_test_data()
-    print(train_x)
-    print(train_y)
+    data = np.loadtxt(clean_dataset)
+    print(data)
+    # dl = DataLoader()
+    # clean_data, noisy_data = dl.load_datasets()
+    # print(clean_data)
+    # print(noisy_data)
+    # print(clean_data == noisy_data)
