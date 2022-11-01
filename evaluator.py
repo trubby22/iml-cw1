@@ -6,11 +6,17 @@ class Evaluator:
     def __init__(self):
         pass
 
-    def evaluate(self, test_db: np.ndarray, trained_tree: Tree):
-        return 0
-
-    def confusion_matrix(self):
+    def evaluate(self):
         pass
+
+    def confusion_matrix(self, test_data: np.ndarray, tree: Tree) -> np.ndarray:
+        predicted_labels = tree.predict(test_data)
+        actual_labels = np.array(test_data[:, -1])
+        assert len(predicted_labels) == len(actual_labels)
+        res = np.zeros(shape=(4, 4))
+        for pl, al in zip(predicted_labels, actual_labels):
+            res[al - 1, pl - 1] += 1
+        return res
 
     def accuracy(self):
         pass

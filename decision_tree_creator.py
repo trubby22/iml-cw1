@@ -79,7 +79,9 @@ if __name__ == '__main__':
     print(datetime.now().strftime('%H:%M:%S'))
     tree = Tree(node, depth)
     print(depth)
-    labels = clean_data[:,-1]
+    labels = clean_data[:, -1]
     prediction = tree.predict(clean_data[:, :-1])
     print(len(labels[labels == prediction]) / len(labels))
-    pass
+    tree.to_file()
+    x = Tree.from_file()
+    print(x)

@@ -1,13 +1,24 @@
 from __future__ import annotations
 import numpy as np
 from dataclasses import *
-import numpy as np
+import pickle
+import sys
 
 
 class Tree:
     def __init__(self, root: Node, depth: int):
         self.root = root
         self.depth = depth
+
+    def to_file(self):
+        sys.setrecursionlimit(1_000_000)
+        with open('tree.p', 'wb') as f:
+            pickle.dump(self, f)
+
+    @staticmethod
+    def from_file():
+        with open('tree.p', 'rb') as f:
+            return pickle.load(f)
 
     def visualise(self):
         pass
