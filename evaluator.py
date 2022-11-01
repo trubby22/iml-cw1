@@ -1,12 +1,13 @@
 from tree import Tree
+import numpy as np
 
 
 class Evaluator:
     def __init__(self):
         pass
 
-    def evaluate(self, tree: Tree):
-        return tree
+    def evaluate(self, test_db: np.ndarray, trained_tree: Tree):
+        return 0
 
     def confusion_matrix(self):
         pass

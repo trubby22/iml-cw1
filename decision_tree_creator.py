@@ -4,6 +4,7 @@ import numpy as np
 from tree import *
 from data_loader import *
 import math
+from datetime import datetime
 
 
 class DecisionTreeCreator:
@@ -11,6 +12,10 @@ class DecisionTreeCreator:
         self.attribute_ixs = range(7)
         self.label_ix = -1
         self.labels = range(1, 5)
+
+    def learn(self, training_dataset):
+        root, depth = self.decision_tree_learning(training_dataset, 0)
+        return Tree(root=root, depth=depth)
 
     def decision_tree_learning(self, training_dataset: np.ndarray, depth):
         if len(set(training_dataset[:, self.label_ix])) == 1:
@@ -25,7 +30,7 @@ class DecisionTreeCreator:
             node = Node(split_value=split_value, attribute=attribute_ix, left=l_branch, right=r_branch)
             return node, max(l_depth, r_depth)
 
-    def find_split(self, dataset: np.ndarray) -> Tuple[int, int]:
+    def find_split(self, dataset: np.ndarray):
         max_info_gain = -math.inf
         split_value = None
         best_split = None
@@ -64,11 +69,14 @@ class DecisionTreeCreator:
     def probability(self, dataset: np.array, label: int) -> float:
         return len(dataset[dataset == label]) / len(dataset)
 
+
 if __name__ == '__main__':
     dl = DataLoader()
     clean_data, noisy_data = dl.load_datasets()
     dtc = DecisionTreeCreator()
+    print(datetime.now().strftime('%H:%M:%S'))
     node, depth = dtc.decision_tree_learning(clean_data, 0)
+    print(datetime.now().strftime('%H:%M:%S'))
     tree = Tree(node, depth)
     print(depth)
     labels = clean_data[:,-1]

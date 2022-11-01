@@ -16,15 +16,18 @@ class DataLoader:
         dtype.append(('L', np.int32))
         return np.loadtxt(path, dtype=dtype)
 
+    def shuffle(self, dataset: np.ndarray) -> np.ndarray:
+        pass
+
     def generate_training_and_test_datasets(self):
         pass
 
 
 if __name__ == '__main__':
-    data = np.loadtxt(clean_dataset)
-    print(data)
-    # dl = DataLoader()
-    # clean_data, noisy_data = dl.load_datasets()
-    # print(clean_data)
-    # print(noisy_data)
-    # print(clean_data == noisy_data)
+    # data = np.loadtxt(clean_dataset)
+    # print(data)
+    dl = DataLoader()
+    clean_data, noisy_data = dl.load_datasets()
+    print(clean_data)
+    print(noisy_data)
+    print(clean_data == noisy_data)

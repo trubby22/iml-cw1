@@ -1,6 +1,7 @@
 from __future__ import annotations
 import numpy as np
 from dataclasses import *
+import numpy as np
 
 
 class Tree:
@@ -16,7 +17,6 @@ class Tree:
 
     def predict(self, text_x: np.ndarray) -> np.array:
         return np.array([self.root.predict(x) for x in text_x])
-        
 
 
 class Node:
