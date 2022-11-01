@@ -17,7 +17,7 @@ class Evaluator:
         return f'''
 confusion matrix: 
 {self.c_matrix}
-accuracy: {self.acc:.0f}
+accuracy: {self.acc:.2f}
 precision: {self.prec}
 recall: {self.rec}
 f1_measure: {self.f1}
