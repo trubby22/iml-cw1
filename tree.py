@@ -12,12 +12,12 @@ class Tree:
 
     def to_file(self):
         sys.setrecursionlimit(1_000_000)
-        with open('tree.p', 'wb') as f:
+        with open('tree.pkl', 'wb') as f:
             pickle.dump(self, f)
 
     @staticmethod
-    def from_file():
-        with open('tree.p', 'rb') as f:
+    def from_file() -> Tree:
+        with open('tree.pkl', 'rb') as f:
             return pickle.load(f)
 
     def visualise(self):
