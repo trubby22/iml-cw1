@@ -66,7 +66,7 @@ class DecisionTreeCreator:
     def information_gain(self, dataset: np.ndarray, split: int) -> float:
         l_dataset, r_dataset = np.split(dataset, [split])
         res = self.entropy(dataset) - self.remainder(l_dataset, r_dataset)
-        assert res >= 0
+        assert res >= -1e-6, res
         return res
 
     def remainder(self, s_left: np.ndarray, s_right: np.ndarray):

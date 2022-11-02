@@ -2,12 +2,10 @@ import numpy as np
 from constants import *
 
 
-_num_of_splits = 10
-_training_split = 0.8
-_validation_split = 0.1
-_test_split = 0.1
-
-assert _training_split + _validation_split + _test_split == 1
+_training_parts = 8
+_validation_parts = 1
+_test_parts = 1
+_num_of_parts = _training_parts + _validation_parts + _test_parts
 
 
 class DataLoader:
@@ -32,23 +30,37 @@ class DataLoader:
     def cross_validate(self):
         res = []
         self.dataset: np.ndarray
-        sections = np.split(self.dataset, _num_of_splits)
-        for i in range(_num_of_splits):
-            training_ixs_raw = list(range(i, i + int(_training_split * _num_of_splits)))
-            training_ixs = [j % _num_of_splits for j in training_ixs_raw]
+        sections = np.split(self.dataset, _num_of_parts)
+        for i in range(_num_of_parts):
+            start = i
+            training_ixs_raw = list(range(
+                start,
+                start + _training_parts
+            ))
+            training_ixs = [j % _num_of_parts for j in training_ixs_raw]
             training_arr = [sections[j] for j in training_ixs]
             training_dataset = np.concatenate(training_arr)
 
-            validation_ixs_raw = list(range(i, i + int(_validation_split * _num_of_splits)))
-            validation_ixs = [j % _num_of_splits for j in validation_ixs_raw]
+            start += _training_parts
+            validation_ixs_raw = list(range(
+                start,
+                start + _validation_parts
+            ))
+            validation_ixs = [j % _num_of_parts for j in validation_ixs_raw]
             validation_arr = [sections[j] for j in validation_ixs]
             validation_dataset = np.concatenate(validation_arr)
 
-            test_ixs_raw = list(range(i, i + int(_test_split * _num_of_splits)))
-            test_ixs = [j % _num_of_splits for j in test_ixs_raw]
+            start += _validation_parts
+            test_ixs_raw = list(range(
+                start,
+                start + _test_parts
+            ))
+            test_ixs = [j % _num_of_parts for j in test_ixs_raw]
             test_arr = [sections[j] for j in test_ixs]
             test_dataset = np.concatenate(test_arr)
 
+            combined = training_ixs + validation_ixs + test_ixs
+            assert len(combined) == len(set(combined)), (training_ixs, validation_ixs, test_ixs)
             res.append((training_dataset, validation_dataset, test_dataset))
         self.cross_validation_arr = res
 
