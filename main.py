@@ -1,5 +1,5 @@
 from data_loader import DataLoader
-from decision_tree import DecisionTree
+from decision_tree_creator import DecisionTreeCreator
 from evaluator import Evaluator
 from pruner import Pruner
 
@@ -8,7 +8,7 @@ if __name__ == '__main__':
     loader = DataLoader("./wifi_db/clean_dataset.txt")
     train_x, train_y, test_x, test_y = loader.load_data()
 
-    tree = DecisionTree()
+    tree = DecisionTreeCreator()
     tree.decision_tree_learning(train_x, train_y)
 
     evaluator = Evaluator()

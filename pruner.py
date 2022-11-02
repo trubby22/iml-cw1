@@ -10,7 +10,6 @@ class Pruner:
         pass
 
     def prune(self, tree: Tree, validation_set: np.ndarray):
-        sys.setrecursionlimit(1_000_000)
         return tree.prune(validation_set)
 
 

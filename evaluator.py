@@ -1,7 +1,6 @@
 import numpy as np
 from data_loader import DataLoader
 from constants import *
-from decision_tree_creator import *
 from utils import *
 
 
@@ -89,6 +88,7 @@ f1_measure: {self.f1}
 
 
 if __name__ == '__main__':
+    from decision_tree_creator import DecisionTreeCreator
     timestamp()
     dl = DataLoader(clean_dataset)
     arr = dl.generate_cross_validation_arr()
