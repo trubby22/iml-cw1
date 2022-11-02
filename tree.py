@@ -32,7 +32,9 @@ Number of non-leaf nodes: {self.root.cardinality - self.root.calc_leaf_nodes()}
 
     def prune(self, validation_set: np.ndarray):
         self.root, _ = self.root.prune(self.root, validation_set)
-        self.depth = self.root.calc_depth()
+        pruned_depth = self.root.calc_depth()
+        assert pruned_depth <= self.depth, (self.depth, pruned_depth)
+        self.depth = pruned_depth
         return self
 
 
@@ -121,7 +123,7 @@ class Node:
                 self.left = l_new
             else:
                 self.left = l_old
-        r_old, r_new = self.left.prune(root, validation_set)
+        r_old, r_new = self.right.prune(root, validation_set)
         if r_new:
             self.right = r_old
             old_t = Tree(root)
@@ -155,7 +157,7 @@ class Node:
 
     def calc_depth(self) -> int:
         if self.is_leaf_node:
-            return 1
+            return 0
         l_depth = self.left.calc_depth()
         r_depth = self.right.calc_depth()
         return 1 + max(l_depth, r_depth)

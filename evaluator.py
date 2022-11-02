@@ -19,9 +19,9 @@ class Evaluator:
 confusion matrix: 
 {self.c_matrix}
 accuracy: {self.acc:.2f}
-precision: {self.prec}
-recall: {self.rec}
-f1_measure: {self.f1}
+precision: {[float(f'{x:.2f}') for x in self.prec]}
+recall: {[float(f'{x:.2f}') for x in self.rec]}
+f1_measure: {[float(f'{x:.2f}') for x in self.f1]}
         '''.strip()
 
     def evaluate(self):

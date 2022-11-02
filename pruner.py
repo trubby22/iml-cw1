@@ -3,6 +3,7 @@ import numpy as np
 from data_loader import *
 from utils import *
 import sys
+from evaluator import *
 
 
 class Pruner:
