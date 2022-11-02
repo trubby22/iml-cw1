@@ -41,7 +41,7 @@ class DecisionTreeCreator:
         attribute_ix = None
         for ix in self.attribute_ixs:
             dataset = dataset[dataset[:, ix].argsort()]
-            info_gain, split = self.max_info_gain(dataset)
+            info_gain, split = self.max_info_gain(dataset, ix)
             if info_gain > max_info_gain:
                 max_info_gain = info_gain
                 best_split = split
@@ -49,11 +49,11 @@ class DecisionTreeCreator:
                 attribute_ix = ix
         return attribute_ix, best_split, split_value
 
-    def max_info_gain(self, dataset: np.ndarray) -> tuple[float, int]:
+    def max_info_gain(self, dataset: np.ndarray, attribute_ix) -> tuple[float, int]:
         max_info_gain = -math.inf
         best_split = None
         for split in np.arange(1, dataset.shape[0]):
-            if dataset[split - 1] == dataset[split]:
+            if dataset[split - 1, attribute_ix] == dataset[split, attribute_ix]:
                 continue
             info_gain = self.information_gain(dataset, split)
             if info_gain > max_info_gain:
