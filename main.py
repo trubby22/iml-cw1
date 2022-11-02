@@ -5,7 +5,7 @@ from evaluator import *
 from pruner import *
 
 
-class Main():
+class Main:
     def __init__(self, path):
         self.path = path
 
