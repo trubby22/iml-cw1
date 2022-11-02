@@ -21,14 +21,21 @@ class DecisionTreeCreator:
     def decision_tree_learning(self, training_dataset: np.ndarray, depth):
         if len(set(training_dataset[:, self.label_ix])) == 1:
             label = training_dataset[:, self.label_ix][0]
-            return Node(label=label), depth
+            cardinality = len(training_dataset[:, self.label_ix])
+            return Node(label=label, cardinality=cardinality), depth
         else:
             attribute_ix, split, split_value = self.find_split(training_dataset)
             training_dataset = training_dataset[training_dataset[:, attribute_ix].argsort()]
             l_dataset, r_dataset = np.split(training_dataset, [split])
             l_branch, l_depth = self.decision_tree_learning(l_dataset, depth + 1)
             r_branch, r_depth = self.decision_tree_learning(r_dataset, depth + 1)
-            node = Node(split_value=split_value, attribute=attribute_ix, left=l_branch, right=r_branch)
+            node = Node(
+                split_value=split_value,
+                attribute=attribute_ix,
+                left=l_branch,
+                right=r_branch,
+                cardinality=l_branch.cardinality + r_branch.cardinality
+            )
             return node, max(l_depth, r_depth)
 
     def find_split(self, dataset: np.ndarray):
@@ -72,7 +79,7 @@ class DecisionTreeCreator:
 
 
 if __name__ == '__main__':
-    dl = DataLoader()
+    dl = DataLoader(clean_dataset)
     clean_data, noisy_data = dl.load_dataset()
     dtc = DecisionTreeCreator()
     timestamp()
@@ -83,6 +90,6 @@ if __name__ == '__main__':
     labels = clean_data[:, -1]
     prediction = tree.predict(clean_data[:, :-1])
     print(len(labels[labels == prediction]) / len(labels))
-    tree.to_file()
-    x = Tree.from_file()
+    to_file(tree, 'tree')
+    x = from_file('tree')
     print(x)

@@ -3,9 +3,11 @@ from constants import *
 
 
 _num_of_splits = 10
-_training_split = 0.6
-_validation_split = 0.2
-_test_split = 0.2
+_training_split = 0.8
+_validation_split = 0.1
+_test_split = 0.1
+
+assert _training_split + _validation_split + _test_split == 1
 
 
 class DataLoader:
@@ -14,7 +16,7 @@ class DataLoader:
         self.dataset = None
         self.cross_validation_arr = None
 
-    def get_cross_validation_arr(self) -> list[tuple]:
+    def generate_cross_validation_arr(self) -> list[tuple]:
         self.load_dataset()
         self.shuffle()
         self.cross_validate()
@@ -52,8 +54,6 @@ class DataLoader:
 
 
 if __name__ == '__main__':
-    # data = np.loadtxt(clean_dataset)
-    # print(data)
     dl = DataLoader(clean_dataset)
     clean_data = dl.load_dataset()
     print(clean_data)
