@@ -7,6 +7,9 @@ from data_loader import *
 from constants import *
 from evaluator import *
 
+import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
+
 
 class Tree:
     def __init__(self, root: Node, depth=None):
@@ -21,9 +24,6 @@ Number of leaf nodes: {self.root.calc_leaf_nodes()}
 Number of non-leaf nodes: {self.root.cardinality - self.root.calc_leaf_nodes()}
         '''.strip()
 
-    def visualise(self):
-        pass
-
     def to_dict(self) -> dict:
         return self.root.to_dict()
 
@@ -36,6 +36,43 @@ Number of non-leaf nodes: {self.root.cardinality - self.root.calc_leaf_nodes()}
         assert pruned_depth <= self.depth, (self.depth, pruned_depth)
         self.depth = pruned_depth
         return self
+
+    def visualise(self):
+        NODE_DIST = 50
+        DEPTH_DIST = 3
+
+        lines = []
+        labels = []
+
+        fig, ax = plt.subplots()
+
+        def draw_node(node, x = 0, y = 0, width = NODE_DIST):
+            xl = x + DEPTH_DIST
+            yl = y - width / 0.3
+            xr = x + DEPTH_DIST
+            yr = y + width / 0.3
+
+            if node.is_leaf_node:
+                labels.append((str(node), (x, y), True))
+            else:
+                lines.append([[x, y], [xl, yl]])
+                lines.append([[x, y], [xr, yr]])
+                labels.append((str(node), (x, y), False))
+                draw_node(node.left, xl, yl, width / 2)
+                draw_node(node.right, xr, yr, width  / 2)
+
+        draw_node(self.root)
+
+        ax.set_xlim(-1, self.depth * DEPTH_DIST + 1)
+        ax.set_ylim(-7 * NODE_DIST, 7 * NODE_DIST)
+
+        line_collection = LineCollection(lines)
+        ax.add_collection(line_collection)
+
+        for label, (x, y), isLeaf in labels:
+            ax.annotate(label, (x, y), ha='center', va='center', size=7, color="white",bbox=dict(boxstyle="round,pad=0.2", fc= "purple" if isLeaf else "blue", lw=0))
+
+        plt.show()
 
 
 class Node:
@@ -169,6 +206,12 @@ class Node:
         r_leaves = self.right.calc_leaf_nodes()
         return l_leaves + r_leaves
 
+    def __repr__(self):
+        if self.is_leaf_node:
+            return f'''{self.label}'''
+        else:
+            return f'''{self.attribute} > {self.split_value}'''
+
 
 if __name__ == '__main__':
     dl = DataLoader(clean_data_path)
@@ -177,3 +220,4 @@ if __name__ == '__main__':
     res = t.predict(ds)
     print(res)
 
+    t.visualise()
