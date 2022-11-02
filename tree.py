@@ -5,7 +5,6 @@ import pickle
 import sys
 from data_loader import *
 from constants import *
-from copy import deepcopy
 from evaluator import *
 
 
@@ -20,30 +19,13 @@ class Tree:
     def to_dict(self) -> dict:
         return self.root.to_dict()
 
-    def predict(self, text_x: np.ndarray) -> np.array:
-        return np.array([self.root.predict(x) for x in text_x])
+    def predict(self, test_x: np.ndarray) -> np.array:
+        return np.array([self.root.predict(x) for x in test_x])
 
-    def prune(self, test_x: np.ndarray) -> Tree:
-        while True:
-            old_root: Node
-            new_root: Node
-            old_root, new_root = self.root.prune()
-            if not new_root:
-                self.root = old_root
-                return self
-            old_tree = Tree(root=old_root, depth=self.depth)
-            new_tree = Tree(root=new_root, depth=new_root.calc_depth())
-            old_e = Evaluator(test_data=test_x, tree=old_tree)
-            old_e.evaluate()
-            old_accuracy = old_e.acc
-            new_e = Evaluator(test_data=test_x, tree=new_tree)
-            new_e.evaluate()
-            new_accuracy = new_e.acc
-            if new_accuracy >= old_accuracy:
-                self.root = new_root
-                self.depth = new_root.calc_depth()
-            else:
-                self.root = old_root
+    def prune(self, validation_set: np.ndarray):
+        self.root, _ = self.root.prune(self.root, validation_set)
+        self.depth = self.root.calc_depth()
+        return self
 
 
 class Node:
@@ -71,6 +53,13 @@ class Node:
         return not self.left and not self.right
 
     @property
+    def can_be_pruned(self):
+        return (
+            self.is_leaf_parent and
+            not self.prune_tested
+        )
+
+    @property
     def is_leaf_parent(self):
         return (
                 self.left and
@@ -92,6 +81,10 @@ class Node:
             'right': self.right.to_dict(),
         }
 
+    @staticmethod
+    def predict_root(root, test_x: np.ndarray):
+        return np.array([root.predict(x) for x in test_x])
+
     def predict(self, x: np.ndarray) -> int:
         if self.is_leaf_node:
             return self.label
@@ -99,28 +92,51 @@ class Node:
             return self.left.predict(x)
         return self.right.predict(x)
 
-    def prune(self):
+    def prune(self, root: Node, validation_set: np.ndarray):
         if self.is_leaf_node:
             return self, None
-        if self.is_leaf_parent:
-            old, new = self.prune_leaf_parent()
-            return old, new
-        l_old, l_new = self.left.prune()
+        l_old, l_new = self.left.prune(root, validation_set)
         if l_new:
-            old_node = deepcopy(self)
-            old_node.left = l_old
+            self.left = l_old
+            old_t = Tree(root)
+            old_e = Evaluator(validation_set, old_t)
+            old_e.evaluate()
+            old_acc = old_e.acc
+
             self.left = l_new
-            return old_node, self
-        r_old, r_new = self.right.prune()
+            new_t = Tree(root)
+            new_e = Evaluator(validation_set, new_t)
+            new_e.evaluate()
+            new_acc = new_e.acc
+
+            if new_acc >= old_acc:
+                self.left = l_new
+            else:
+                self.left = l_old
+        r_old, r_new = self.left.prune(root, validation_set)
         if r_new:
-            old_node = deepcopy(self)
-            old_node.right = r_old
+            self.right = r_old
+            old_t = Tree(root)
+            old_e = Evaluator(validation_set, old_t)
+            old_e.evaluate()
+            old_acc = old_e.acc
+
             self.right = r_new
-            return old_node, self
+            new_t = Tree(root)
+            new_e = Evaluator(validation_set, new_t)
+            new_e.evaluate()
+            new_acc = new_e.acc
+
+            if new_acc >= old_acc:
+                self.right = r_new
+            else:
+                self.right = r_old
+        if self.can_be_pruned:
+            return self.prune_leaf_parent()
         return self, None
 
     def prune_leaf_parent(self):
-        assert self.is_leaf_parent
+        assert self.can_be_pruned
         l_node: Node = self.left
         r_node: Node = self.right
         majority_node = l_node if l_node.cardinality >= r_node.cardinality else r_node
