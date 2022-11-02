@@ -10,7 +10,6 @@ class Pruner:
         pass
 
     def prune(self, tree: Tree, validation_set: np.ndarray):
-        sys.setrecursionlimit(1_000_000)
         return tree.prune(validation_set)
 
 
@@ -20,8 +19,10 @@ if __name__ == '__main__':
     arr = dl.generate_cross_validation_arr()
     trees = from_file('trees')
     pruned_trees = []
-    for tree, datasets in zip(trees, arr):
+    timestamp()
+    for tree, datasets in list(zip(trees, arr)):
         train_set, validation_set, test_set = datasets
         pruned_tree = p.prune(tree, validation_set)
         pruned_trees.append(pruned_tree)
+        timestamp()
     to_file(pruned_trees, 'pruned_trees')

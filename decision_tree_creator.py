@@ -1,28 +1,24 @@
-from typing import Tuple, Any
-
-import numpy as np
-from tree import *
-from data_loader import *
 import math
-from datetime import datetime
+
+from data_loader import *
+from tree import Tree, Node
 from utils import *
 
 
 class DecisionTreeCreator:
     def __init__(self):
-        self.attribute_ixs = range(7)
+        self.attribute_ixs = np.arange(7)
         self.label_ix = -1
-        self.labels = range(1, 5)
+        self.labels = np.arange(1, 5)
 
     def learn(self, training_dataset):
         root, depth = self.decision_tree_learning(training_dataset, 0)
         return Tree(root=root, depth=depth)
 
     def decision_tree_learning(self, training_dataset: np.ndarray, depth):
-        if len(set(training_dataset[:, self.label_ix])) == 1:
-            label = training_dataset[:, self.label_ix][0]
-            cardinality = len(training_dataset[:, self.label_ix])
-            return Node(label=label, cardinality=cardinality), depth
+        labels = training_dataset[:, self.label_ix]
+        if np.unique(labels).size == 1:
+            return Node(label=labels[0], cardinality=labels.size), depth
         else:
             attribute_ix, split, split_value = self.find_split(training_dataset)
             training_dataset = training_dataset[training_dataset[:, attribute_ix].argsort()]
@@ -53,13 +49,13 @@ class DecisionTreeCreator:
                 attribute_ix = ix
         return attribute_ix, best_split, split_value
 
-    def max_info_gain(self, dataset: np.ndarray, attribute_ix: int) -> Tuple[float, int]:
+    def max_info_gain(self, dataset: np.ndarray, attribute_ix) -> tuple[float, int]:
         max_info_gain = -math.inf
         best_split = None
-        for split in range(1, len(dataset)):
-            if dataset[split - 1] == dataset[split]:
+        for split in np.arange(1, dataset.shape[0]):
+            if dataset[split - 1, attribute_ix] == dataset[split, attribute_ix]:
                 continue
-            info_gain = self.information_gain(dataset, attribute_ix, split)
+            info_gain = self.information_gain(dataset, split)
             if info_gain > max_info_gain:
                 max_info_gain = info_gain
                 best_split = split
@@ -71,13 +67,14 @@ class DecisionTreeCreator:
     
     def entropy(self, dataset: np.ndarray) -> float:
         entropy = 0
-        for label in set(dataset[:, self.label_ix]):
+        for label in np.unique(dataset[:, self.label_ix]):
             p = self.probability(dataset[:, self.label_ix], label)
             entropy += p * np.log2(p)
         return -entropy
 
-    def probability(self, dataset: np.array, label: int) -> float:
-        return len(dataset[dataset == label]) / len(dataset)
+    @staticmethod
+    def probability(dataset: np.array, label: int) -> float:
+        return dataset[dataset == label].shape[0] / dataset.shape[0]
 
 
 if __name__ == '__main__':
