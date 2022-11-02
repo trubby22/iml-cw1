@@ -57,6 +57,8 @@ class DecisionTreeCreator:
         max_info_gain = -math.inf
         best_split = None
         for split in range(1, len(dataset)):
+            if dataset[split - 1] == dataset[split]:
+                continue
             info_gain = self.information_gain(dataset, attribute_ix, split)
             if info_gain > max_info_gain:
                 max_info_gain = info_gain
