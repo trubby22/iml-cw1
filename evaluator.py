@@ -2,6 +2,7 @@ import numpy as np
 from data_loader import DataLoader
 from constants import *
 from utils import *
+import math
 
 
 class Evaluator:
@@ -50,7 +51,7 @@ f1_measure: {[float(f'{x:.2f}') for x in self.f1]}
                 if i == j:
                     correct += self.c_matrix[i][j]
                 total += self.c_matrix[i][j]
-        res = correct / total
+        res = correct / total if total != 0 else math.nan
         self.acc = res
 
     def precision(self):
@@ -62,7 +63,7 @@ f1_measure: {[float(f'{x:.2f}') for x in self.f1]}
                 if i == j:
                     correct = self.c_matrix[j][i]
                 total += self.c_matrix[j][i]
-            res[i] = correct / total
+            res[i] = correct / total if total != 0 else math.nan
         self.prec = res
 
     def recall(self):
@@ -74,7 +75,7 @@ f1_measure: {[float(f'{x:.2f}') for x in self.f1]}
                 if i == j:
                     correct = self.c_matrix[i][j]
                 total += self.c_matrix[i][j]
-            res[i] = correct / total
+            res[i] = correct / total if total != 0 else math.nan
         self.rec = res
 
     def f1_measure(self):
