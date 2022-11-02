@@ -44,7 +44,8 @@ class Main:
 
 if __name__ == '__main__':
     print('Clean data analysis')
-    Main(clean_data_path).run()
     print()
+    Main(clean_data_path).run()
     print('Noisy data analysis')
+    print()
     Main(noisy_data_path).run()

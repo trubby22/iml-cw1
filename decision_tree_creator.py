@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 from data_loader import *
 from tree import Tree, Node
 from utils import *
@@ -63,18 +65,30 @@ class DecisionTreeCreator:
 
     def information_gain(self, dataset: np.ndarray, split: int) -> float:
         l_dataset, r_dataset = np.split(dataset, [split])
-        return self.entropy(dataset) - self.entropy(l_dataset) - self.entropy(r_dataset)
+        res = self.entropy(dataset) - self.remainder(l_dataset, r_dataset)
+        assert res >= 0
+        return res
+
+    def remainder(self, s_left: np.ndarray, s_right: np.ndarray):
+        size_left = s_left.shape[0]
+        size_right = s_right.shape[0]
+        size_all = size_left + size_right
+        return (size_left * self.entropy(s_left) + size_right * self.entropy(s_right)) / size_all
 
     def entropy(self, dataset: np.ndarray) -> float:
-        entropy = 0
+        total = 0
         for label in np.unique(dataset[:, self.label_ix]):
             p = self.probability(dataset[:, self.label_ix], label)
-            entropy += p * np.log2(p)
-        return -entropy
+            total += p * np.log2(p)
+        res = -total
+        assert res >= 0
+        return res
 
     @staticmethod
     def probability(dataset: np.array, label: int) -> float:
-        return dataset[dataset == label].shape[0] / dataset.shape[0]
+        res = dataset[dataset == label].shape[0] / dataset.shape[0]
+        assert res >= 0
+        return res
 
 
 if __name__ == '__main__':
