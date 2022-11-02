@@ -78,7 +78,7 @@ class DecisionTreeCreator:
 
 
 if __name__ == '__main__':
-    dl = DataLoader(clean_dataset)
+    dl = DataLoader(clean_data_path)
     clean_data = dl.load_dataset()
     dtc = DecisionTreeCreator()
     timestamp()

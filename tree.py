@@ -26,6 +26,14 @@ class Tree:
         with open('tree.pkl', 'rb') as f:
             return pickle.load(f)
 
+    def __repr__(self):
+        return f'''
+Tree with depth: {self.depth}
+Total number of nodes: {self.root.cardinality}
+Number of leaf nodes: {self.root.calc_leaf_nodes()}
+Number of non-leaf nodes: {self.root.cardinality - self.root.calc_leaf_nodes()}
+        '''.strip()
+
     def visualise(self):
         pass
 
@@ -187,9 +195,16 @@ class Node:
         r_depth = self.right.calc_depth()
         return 1 + max(l_depth, r_depth)
 
+    def calc_leaf_nodes(self):
+        if self.is_leaf_node:
+            return 1
+        l_leaves = self.left.calc_leaf_nodes()
+        r_leaves = self.right.calc_leaf_nodes()
+        return l_leaves + r_leaves
+
 
 if __name__ == '__main__':
-    dl = DataLoader(clean_dataset)
+    dl = DataLoader(clean_data_path)
     ds = dl.load_dataset()
     t = from_file('tree')
     res = t.predict(ds)

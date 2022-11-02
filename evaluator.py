@@ -90,7 +90,7 @@ f1_measure: {self.f1}
 if __name__ == '__main__':
     from decision_tree_creator import DecisionTreeCreator
     timestamp()
-    dl = DataLoader(clean_dataset)
+    dl = DataLoader(noisy_data_path)
     arr = dl.generate_cross_validation_arr()
     timestamp()
     trained_trees = []
