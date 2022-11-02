@@ -1,4 +1,3 @@
-from tree import Tree
 import numpy as np
 from data_loader import DataLoader
 from constants import *
@@ -7,7 +6,7 @@ from utils import *
 
 
 class Evaluator:
-    def __init__(self, test_data: np.ndarray, tree: Tree):
+    def __init__(self, test_data: np.ndarray, tree):
         self.test_data = test_data
         self.tree = tree
         self.c_matrix = None
@@ -32,7 +31,6 @@ f1_measure: {self.f1}
         self.precision()
         self.recall()
         self.f1_measure()
-        print(self)
 
     def confusion_matrix(self):
         predicted_labels = self.tree.predict(self.test_data)
@@ -93,10 +91,15 @@ f1_measure: {self.f1}
 if __name__ == '__main__':
     timestamp()
     dl = DataLoader(clean_dataset)
-    arr = dl.get_cross_validation_arr()
+    arr = dl.generate_cross_validation_arr()
     timestamp()
+    trained_trees = []
     for training_set, validation_set, test_set in arr:
         t = DecisionTreeCreator().learn(training_set)
+        trained_trees.append(t)
         e = Evaluator(test_data=test_set, tree=t)
         e.evaluate()
+        print(e)
         timestamp()
+    to_file(trained_trees, 'trees')
+
