@@ -15,7 +15,7 @@ class Pruner:
 
 if __name__ == '__main__':
     p = Pruner()
-    dl = DataLoader(clean_dataset)
+    dl = DataLoader(clean_data_path)
     arr = dl.generate_cross_validation_arr()
     trees = from_file('trees')
     pruned_trees = []

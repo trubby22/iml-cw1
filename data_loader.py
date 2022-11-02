@@ -54,7 +54,7 @@ class DataLoader:
 
 
 if __name__ == '__main__':
-    dl = DataLoader(clean_dataset)
+    dl = DataLoader(clean_data_path)
     clean_data = dl.load_dataset()
     print(clean_data)
     print(clean_data == 1)
