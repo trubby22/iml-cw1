@@ -50,15 +50,15 @@ class DecisionTreeCreator:
         max_info_gain = -math.inf
         best_split = None
         for split in range(1, len(dataset)):
-            info_gain = self.information_gain(dataset, attribute_ix, split)
+            info_gain = self.information_gain(dataset, split)
             if info_gain > max_info_gain:
                 max_info_gain = info_gain
                 best_split = split
         return max_info_gain, best_split
 
-    def information_gain(self, dataset: np.ndarray, attribute_ix: int, split: int) -> float:
+    def information_gain(self, dataset: np.ndarray, split: int) -> float:
         l_dataset, r_dataset = np.split(dataset, [split])
-        return self.entropy(dataset) - self.entropy(l_dataset) - self.entropy(r_dataset)
+        return self.entropy(dataset) - len(l_dataset) / len(dataset) * self.entropy(l_dataset) - len(r_dataset) / len(dataset) * self.entropy(r_dataset)
     
     def entropy(self, dataset: np.ndarray) -> float:
         entropy = 0
@@ -72,8 +72,8 @@ class DecisionTreeCreator:
 
 
 if __name__ == '__main__':
-    dl = DataLoader()
-    clean_data, noisy_data = dl.load_dataset()
+    dl = DataLoader(clean_dataset)
+    clean_data = dl.load_dataset()
     dtc = DecisionTreeCreator()
     timestamp()
     node, depth = dtc.decision_tree_learning(clean_data, 0)

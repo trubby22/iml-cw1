@@ -10,6 +10,9 @@ class Tree:
         self.root = root
         self.depth = depth
 
+    def __str__(self):
+        return str(self.root) 
+
     def to_file(self):
         sys.setrecursionlimit(1_000_000)
         with open('tree.pkl', 'wb') as f:
@@ -38,6 +41,17 @@ class Node:
         self.left = left
         self.right = right
         self.label = label
+
+    def __str__(self):
+        return self.to_str(0)
+
+    def to_str(self, depth: int) -> str:
+        if self.is_leaf_node:
+            return f'{"  " * depth}label: {self.label}'
+
+        return f'{"  " * depth}attribute: {self.attribute}, split_value: {self.split_value}\n' \
+               f'{self.left.to_str(depth + 1)}\n' \
+               f'{self.right.to_str(depth + 1)}'
 
     @property
     def is_leaf_node(self):
