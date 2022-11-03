@@ -13,8 +13,8 @@ class Tree:
         self.root = root
         self.depth = depth
 
-    def __str__(self):
-        return str(self.root) 
+    # def __str__(self):
+    #     return str(self.root) 
 
     def to_file(self):
         sys.setrecursionlimit(1_000_000)
