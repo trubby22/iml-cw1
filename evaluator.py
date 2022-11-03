@@ -31,6 +31,7 @@ f1_measure: {[float(f'{x:.2f}') for x in self.f1]}
         self.precision()
         self.recall()
         self.f1_measure()
+        return self.c_matrix, self.acc, self.prec, self.rec, self.f1 
 
     def confusion_matrix(self):
         predicted_labels = self.tree.predict(self.test_data)
