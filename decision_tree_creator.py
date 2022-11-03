@@ -51,7 +51,7 @@ class DecisionTreeCreator:
                 attribute_ix = ix
         return attribute_ix, best_split, split_value
 
-    def max_info_gain(self, dataset: np.ndarray, attribute_ix) -> tuple[float, int]:
+    def max_info_gain(self, dataset: np.ndarray, attribute_ix):
         max_info_gain = -math.inf
         best_split = None
         for split in np.arange(1, dataset.shape[0]):
@@ -63,7 +63,7 @@ class DecisionTreeCreator:
                 best_split = split
         return max_info_gain, best_split
 
-    def information_gain(self, dataset: np.ndarray, split: int) -> float:
+    def information_gain(self, dataset: np.ndarray, split: int):
         l_dataset, r_dataset = np.split(dataset, [split])
         res = self.entropy(dataset) - self.remainder(l_dataset, r_dataset)
         assert res >= -1e-6, res
@@ -75,7 +75,7 @@ class DecisionTreeCreator:
         size_all = size_left + size_right
         return (size_left * self.entropy(s_left) + size_right * self.entropy(s_right)) / size_all
 
-    def entropy(self, dataset: np.ndarray) -> float:
+    def entropy(self, dataset: np.ndarray):
         total = 0
         for label in np.unique(dataset[:, self.label_ix]):
             p = self.probability(dataset[:, self.label_ix], label)
@@ -85,7 +85,7 @@ class DecisionTreeCreator:
         return res
 
     @staticmethod
-    def probability(dataset: np.array, label: int) -> float:
+    def probability(dataset: np.array, label: int):
         res = dataset[dataset == label].shape[0] / dataset.shape[0]
         assert res >= 0
         return res

@@ -14,7 +14,7 @@ class DataLoader:
         self.dataset = None
         self.cross_validation_arr = None
 
-    def generate_cross_validation_arr(self) -> list[tuple]:
+    def generate_cross_validation_arr(self):
         self.load_dataset()
         self.shuffle()
         self.cross_validate()

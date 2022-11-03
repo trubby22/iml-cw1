@@ -25,7 +25,7 @@ class Tree:
             pickle.dump(self, f)
 
     @staticmethod
-    def from_file() -> Tree:
+    def from_file():
         with open('tree.pkl', 'rb') as f:
             return pickle.load(f)
 
@@ -37,10 +37,10 @@ Number of leaf nodes: {self.root.calc_leaf_nodes()}
 Number of non-leaf nodes: {self.root.cardinality - self.root.calc_leaf_nodes()}
         '''.strip()
 
-    def to_dict(self) -> dict:
+    def to_dict(self):
         return self.root.to_dict()
 
-    def predict(self, test_x: np.ndarray) -> np.array:
+    def predict(self, test_x: np.ndarray):
         return np.array([self.root.predict(x) for x in test_x])
 
     def prune(self, validation_set: np.ndarray):
@@ -111,7 +111,7 @@ class Node:
     def __str__(self):
         return self.to_str(0)
 
-    def to_str(self, depth: int) -> str:
+    def to_str(self, depth: int):
         if self.is_leaf_node:
             return f'{"  " * depth}label: {self.label}'
 
@@ -122,7 +122,7 @@ class Node:
     def __str__(self):
         return self.to_str(0)
 
-    def to_str(self, depth: int) -> str:
+    def to_str(self, depth: int):
         if self.is_leaf_node:
             return f'{"  " * depth}label: {self.label}'
 
@@ -167,7 +167,7 @@ class Node:
     def predict_root(root, test_x: np.ndarray):
         return np.array([root.predict(x) for x in test_x])
 
-    def predict(self, x: np.ndarray) -> int:
+    def predict(self, x: np.ndarray):
         if self.is_leaf_node:
             return self.label
         if x[self.attribute] < self.split_value:

@@ -15,7 +15,7 @@ class Evaluator:
         self.rec = None
         self.f1 = None
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return f'''
 confusion matrix: 
 {self.c_matrix}
@@ -104,4 +104,3 @@ if __name__ == '__main__':
         print(e)
         timestamp()
     to_file(trained_trees, 'trees')
-
