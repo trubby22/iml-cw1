@@ -1,7 +1,8 @@
 # WiFi decision tree algorithm
 
-The WiFi decision tree algorithm determines your location based on signal strengths of several WiFi routers. It is assumed that the user stands in one of 5 rooms in a flat with multiple routers placed around.
-It was developed during the 3rd year Intro to Machine Learning module at Imperial College London
+The WiFi decision tree algorithm determines one of the indoor locations based on WIFI signal strengths collected from a mobile phone. It is assumed that the mobile phone is in one of 4 rooms in a flat with 7 routers placed around.
+
+It was developed during the 3rd year Intro to Machine Learning module at Imperial College London.
 
 ## Running instructions
 
