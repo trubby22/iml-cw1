@@ -152,3 +152,8 @@ cython_debug/
 #.idea/
 playground.py
 *.pkl
+
+*.zip
+.DS_Store
+__pycache__
+.idea
